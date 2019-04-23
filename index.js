@@ -1,8 +1,8 @@
 const express = require('express')
 const line = require('@line/bot-sdk')
 
-const db = require('../modules/db')
-const message = require('../modules/handleMessage')
+const db = require('./modules/db')
+const message = require('./modules/handleMessage')
 
 const PORT = process.env.PORT || 3000
 
@@ -32,6 +32,7 @@ async function handleEvent(event) {
       {type: 'text', text: text}
     )))
   }
+  console.log(event)
   const userId = event.source.userId
   const name = message.detectName(event.message.text)
   if (name !== null) {
@@ -83,5 +84,4 @@ async function handleEvent(event) {
   return reply([`${item.data.displayName}さん\n遅刻: ${newCounts.late} 欠席: ${newCounts.absent}`])
 }
 
-app.listen(PORT)
-console.log(`Server running at ${PORT}`)
+module.exports = app
