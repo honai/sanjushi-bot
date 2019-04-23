@@ -26,7 +26,7 @@ async function getData(userId) {
   }
 }
 
-async function createData(userId, initialCounts = {}) {
+async function createData(userId, initialCounts = {}, name = '名無し') {
   const params = {
     TableName: tableName,
     Item: {
@@ -42,7 +42,7 @@ async function createData(userId, initialCounts = {}) {
             N: String(initialCounts.late)
           },
           'displayName': {
-            S: '名無し'
+            S: name
           }
         }
       }

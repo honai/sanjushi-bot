@@ -31,6 +31,9 @@ async function handleEvent(event) {
     )))
   }
   const userId = event.source.userId
+  if (!userId) {
+    return Promise.resolve(null)
+  }
   const name = message.detectName(event.message.text)
   if (name !== null) {
     const nameRes = await db.setName(userId, name)
@@ -49,15 +52,16 @@ async function handleEvent(event) {
     return reply(['getエラー'])
   }
   if (Object.keys(getRes).length === 0) {
-    if (await db.create(userId, counts) === 1) {
+    const { displayName } = await client.getProfile(userId)
+    if (await db.create(userId, counts, displayName) === 1) {
       return reply(['createエラー'])
     }
     const texts = [
       "はじめまして。遅刻と欠席のカウントをするよ。\n"
         + "メッセージに「遅刻」「欠席」が含まれていると、ええ感じに数字を読み取ってデータベースに追加していくよ。\n"
         + "間違って加算された場合は、負の数を言うことで修正できるよ。",
-      `名無しさん\n遅刻: ${counts.late} 欠席: ${counts.absent}`,
-      '名前を変えるには「名前変更 たろう」みたいに言ってね。'
+      `${displayName}さん\n遅刻: ${counts.late} 欠席: ${counts.absent}`,
+      '名前を変えるには「名前変更 イオ」みたいに言ってね。'
     ]
     return reply(texts)
   }
