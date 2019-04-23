@@ -15,7 +15,7 @@ const config = {
 
 const app = express()
 
-app.post('/webhook', line.middleware(config), (req, res) => {
+app.post('*', line.middleware(config), (req, res) => {
   Promise
     .all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
