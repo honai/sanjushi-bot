@@ -1,0 +1,27 @@
+{
+  "name": "sanjushi-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --require dotenv/config server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/honai/sanjushi-bot.git"
+  },
+  "keywords": [],
+  "author": "Honai Ueoka",
+  "license": "MIT",
+  "dependencies": {
+    "@line/bot-sdk": "^6.7.0",
+    "aws-sdk": "^2.441.0",
+    "axios": "^0.18.0",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "dotenv": "^7.0.0"
+  }
+}
