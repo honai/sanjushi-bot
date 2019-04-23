@@ -1,10 +1,8 @@
 const express = require('express')
 const line = require('@line/bot-sdk')
 
-const db = require('./modules/db')
-const message = require('./modules/handleMessage')
-
-const PORT = process.env.PORT || 3000
+const db = require('../modules/db')
+const message = require('../modules/handleMessage')
 
 process.on('unhandledRejection', console.dir)
 
@@ -32,7 +30,6 @@ async function handleEvent(event) {
       {type: 'text', text: text}
     )))
   }
-  console.log(event)
   const userId = event.source.userId
   const name = message.detectName(event.message.text)
   if (name !== null) {
@@ -51,15 +48,8 @@ async function handleEvent(event) {
   if (getRes === 1) {
     return reply(['getエラー'])
   }
-  const item = {}
-  item._id = getRes.Item._id.S
-  item.data = {
-    absent: Number(getRes.Item.data.M.absent.N),
-    late: Number(getRes.Item.data.M.late.N),
-    displayName: getRes.Item.data.M.displayName.S
-  }
-  if (Object.keys(item).length === 0) {
-    if (db.create(userId, counts) === 1) {
+  if (Object.keys(getRes).length === 0) {
+    if (await db.create(userId, counts) === 1) {
       return reply(['createエラー'])
     }
     const texts = [
@@ -71,6 +61,14 @@ async function handleEvent(event) {
     ]
     return reply(texts)
   }
+  const item = {}
+  item._id = getRes.Item._id.S
+  item.data = {
+    absent: Number(getRes.Item.data.M.absent.N),
+    late: Number(getRes.Item.data.M.late.N),
+    displayName: getRes.Item.data.M.displayName.S
+  }
+
 
   const newCounts = {
     absent: counts.absent + item.data.absent,

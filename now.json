@@ -9,6 +9,9 @@
   "builds": [
     { "src": "index.js", "use": "@now/node" }
   ],
+  "routes": [
+    { "src": "/", "dest": "404.html", "status": 404 }
+  ],
   "regions": ["hnd1"],
   "alias": ["sanjushi-bot.honai.now.sh"]
 }
