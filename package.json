@@ -2,9 +2,9 @@
   "name": "sanjushi-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node webhook/server.js",
     "dev": "node --require dotenv/config server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

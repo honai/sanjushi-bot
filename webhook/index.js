@@ -1,8 +1,8 @@
 const express = require('express')
 const line = require('@line/bot-sdk')
 
-const db = require('./db')
-const message = require('./handleMessage')
+const db = require('../modules/db')
+const message = require('../modules/handleMessage')
 
 const PORT = process.env.PORT || 3000
 
