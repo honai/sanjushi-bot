@@ -6,7 +6,7 @@ const dynamo = new AWS.DynamoDB({
   accessKeyId: process.env.DYNAMO_ACCESS_KEY_ID,
   secretAccessKey: process.env.DYNAMO_SECRET_ACCESS_KEY
 })
-const tableName = 'line_bot'
+const tableName = process.env.DYNAMO_TABLENAME
 
 async function getData(userId) {
   const params = {
@@ -112,9 +112,23 @@ async function setName(userId, name) {
   }
 }
 
+async function scan() {
+  const params = {
+    TableName: tableName
+  }
+  try {
+    const res = await dynamo.scan(params).promise()
+    return res
+  } catch(err) {
+    console.error(err)
+    return 1
+  }
+}
+
 module.exports = {
   get: getData,
   create: createData,
   update: updateData,
-  setName: setName
+  setName: setName,
+  scan: scan
 }

@@ -1,7 +1,7 @@
 const express = require('express')
 const line = require('@line/bot-sdk')
 
-const db = require('../modules/db')
+const action = require('../modules/action')
 const message = require('../modules/handleMessage')
 
 process.on('unhandledRejection', console.dir)
@@ -25,65 +25,28 @@ async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
     return Promise.resolve(null)
   }
-  function reply(textArray) {
-    return client.replyMessage(event.replyToken, textArray.map(text => (
-      {type: 'text', text: text}
-    )))
+  const messageText = event.message.text
+  const ACTION = message.trigger(messageText)
+  switch(ACTION) {
+    case message.actionDef.RANKING:
+      if (await action.ranking(event, client) === false) {
+        return Promise.resolve(null)
+      }
+      break
+    case message.actionDef.SETNAME:
+      if (await action.setName(event, client) === false) {
+        return Promise.resolve(null)
+      }
+      break
+    case message.actionDef.COUNT:
+      if (await action.coutFromMessage(event, client) === false) {
+        return Promise.resolve(null)
+      }
+      break
+    default:
+      return Promise.resolve(null)
   }
-  const userId = event.source.userId
-  if (!userId) {
-    return Promise.resolve(null)
-  }
-  const name = message.detectName(event.message.text)
-  if (name !== null) {
-    const nameRes = await db.setName(userId, name)
-    if (nameRes === 1) {
-      return reply(['setNameエラー'])
-    }
-    return reply([`名前を${name}に変更したよ。`])
-  }
-  const counts = message.count(event.message.text)
-  if (counts.absent === 0 && counts.late === 0) {
-    return Promise.resolve(null)
-  }
-
-  const getRes = await db.get(userId)
-  if (getRes === 1) {
-    return reply(['getエラー'])
-  }
-  if (Object.keys(getRes).length === 0) {
-    const { displayName } = await client.getProfile(userId)
-    if (await db.create(userId, counts, displayName) === 1) {
-      return reply(['createエラー'])
-    }
-    const texts = [
-      "はじめまして。遅刻と欠席のカウントをするよ。\n"
-        + "メッセージに「遅刻」「欠席」が含まれていると、ええ感じに数字を読み取ってデータベースに追加していくよ。\n"
-        + "間違って加算された場合は、負の数を言うことで修正できるよ。",
-      `${displayName}さん\n遅刻: ${counts.late} 欠席: ${counts.absent}`,
-      '名前を変えるには「名前変更 イオ」みたいに言ってね。'
-    ]
-    return reply(texts)
-  }
-  const item = {}
-  item._id = getRes.Item._id.S
-  item.data = {
-    absent: Number(getRes.Item.data.M.absent.N),
-    late: Number(getRes.Item.data.M.late.N),
-    displayName: getRes.Item.data.M.displayName.S
-  }
-
-
-  const newCounts = {
-    absent: counts.absent + item.data.absent,
-    late: counts.late + item.data.late
-  }
-
-  const updateRes = await db.update(userId, newCounts)
-  if (updateRes === 1) {
-    return reply(['updateエラー'])
-  }
-  return reply([`${item.data.displayName}さん\n遅刻: ${newCounts.late} 欠席: ${newCounts.absent}`])
+  return client.replyMessage(event.replyToken, {type: 'text', text: 'エラー'})
 }
 
 module.exports = app

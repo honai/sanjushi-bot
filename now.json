@@ -4,7 +4,8 @@
     "LINE_CHANNEL_SECRET": "@line-channel-secret",
     "LINE_CHANNEL_ACCESS_TOKEN": "@line-channel-access-token",
     "DYNAMO_ACCESS_KEY_ID": "@dynamo-access-key-id",
-    "DYNAMO_SECRET_ACCESS_KEY": "@dynamo-secret-access-key"
+    "DYNAMO_SECRET_ACCESS_KEY": "@dynamo-secret-access-key",
+    "DYNAMO_TABLENAME": "line_bot"
   },
   "builds": [
     { "src": "webhook/index.js", "use": "@now/node" }
