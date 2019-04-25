@@ -29,24 +29,27 @@ async function handleEvent(event) {
   const ACTION = message.trigger(messageText)
   switch(ACTION) {
     case message.actionDef.RANKING:
-      if (await action.ranking(event, client) === false) {
-        return Promise.resolve(null)
+      const reply = await action.ranking()
+      if (reply) {
+        return client.replyMessage(event.replyToken, reply)
       }
       break
     case message.actionDef.SETNAME:
-      if (await action.setName(event, client) === false) {
-        return Promise.resolve(null)
+      const reply2 = await action.setName(event)
+      if (reply2) {
+        return client.replyMessage(event.replyToken, reply2)
       }
       break
     case message.actionDef.COUNT:
-      if (await action.coutFromMessage(event, client) === false) {
-        return Promise.resolve(null)
+      const reply3 = await action.coutFromMessage(event, client)
+      if (reply3) {
+        return client.replyMessage(event.replyToken, reply3)
       }
       break
     default:
       return Promise.resolve(null)
   }
-  return client.replyMessage(event.replyToken, {type: 'text', text: 'エラーです'})
+  return Promise.resolve(null)
 }
 
 module.exports = app

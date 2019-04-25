@@ -1,28 +1,32 @@
 const db = require('./db')
 const message = require('./handleMessage')
 
+const errorRep = [{
+  type: 'text',
+  message: 'エラー'
+}]
+
 async function countFromMessage(event, client) {
   const counts = message.count(event.message.text)
   if (counts.absent === 0 && counts.late === 0 ) {
-    return false
+    return null
   }
   const getRes = await db.get(event.source.userId)
   if (Object.keys(getRes).length === 0) {
     const { displayName } = await client.getProfile(event.source.userId)
     if (await db.create(event.source.userId, counts, displayName) === 1) {
-      return true
+      return errorRep
     }
-    const texts = [
+    const replys = [
       "はじめまして。遅刻と欠席のカウントをするよ。\n"
         + "メッセージに「遅刻」「欠席」が含まれていると、ええ感じに数字を読み取ってデータベースに追加していくよ。\n"
         + "間違って加算された場合は、負の数を言うことで修正できるよ。",
       `${displayName}さん\n遅刻: ${counts.late} 欠席: ${counts.absent}`,
       '名前を変えるには「名前変更 イオ」みたいに言ってね。'
     ]
-    client.replyMessage(event.replyToken, texts.map(text => (
+    return texts.map(text => (
       { type: 'text', text: text }
-    )))
-    return false
+    ))
   }
   const item = {}
   item._id = getRes.Item._id.S
@@ -38,13 +42,12 @@ async function countFromMessage(event, client) {
   }
 
   if (await db.update(event.source.userId, newCounts) === 1) {
-    return true
+    return errorRep
   }
-  client.replyMessage(event.replyToken, [{
+  return [{
     type: 'text',
     text: `${item.data.displayName}さん\n遅刻: ${newCounts.late} 欠席: ${newCounts.absent}`
-  }])
-  return false
+  }]
 }
 
 function makeGraphText(label, count) {
@@ -62,7 +65,7 @@ function makeGraphText(label, count) {
   return graphText
 }
 
-async function ranking(event, client) {
+async function ranking() {
   const scanRes = await db.scan()
   const data = scanRes.Items.map(item => (
     {
@@ -97,25 +100,23 @@ async function ranking(event, client) {
     )
   })
 
-  client.replyMessage(event.replyToken, {
+  return [{
     type: 'text',
     text: textArr.join('\n\n')
-  })
-  return false
+  }]
 }
 
-async function setName(event, client) {
+async function setName(event) {
   const newName = message.detectName(event.message.text)
   if (newName === null) {
-    return false
+    return null
   }
   if (await db.setName(event.source.userId, newName) === 1) {
-    return true
+    return errorRep
   }
-  client.replyMessage(event.replyToken, [{
+  return [{
     type: 'text', text: `名前を${newName}に変更したよ。`
-  }])
-  return false
+  }]
 }
 
 module.exports = {
