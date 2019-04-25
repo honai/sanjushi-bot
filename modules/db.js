@@ -112,9 +112,23 @@ async function setName(userId, name) {
   }
 }
 
+async function scan() {
+  const params = {
+    TableName: tableName
+  }
+  try {
+    const res = await dynamo.scan(params).promise()
+    return res
+  } catch(err) {
+    console.error(err)
+    return 1
+  }
+}
+
 module.exports = {
   get: getData,
   create: createData,
   update: updateData,
-  setName: setName
+  setName: setName,
+  scan: scan
 }
