@@ -1,28 +1,22 @@
 const db = require('./db')
 const message = require('./handleMessage')
 
-const def = {
-  COUNT: 'COUNT',
-  RANKING: 'RANKING',
-  SETNAME: 'SETNAME'
-}
-
-async function count(event, client) {
-  const { absent, late} = message.count(event.message.text)
-  if (absent === 0 && late === 0 ) {
+async function countFromMessage(event, client) {
+  const counts = message.count(event.message.text)
+  if (counts.absent === 0 && counts.late === 0 ) {
     return false
   }
-  const getResponse = await db.get(event.source.userId)
-  if (Object.keys(getResponse).length === 0) {
-    const { displayName } = await client.getProfile(userId)
-    if (await db.create(userId, counts, displayName) === 1) {
+  const getRes = await db.get(event.source.userId)
+  if (Object.keys(getRes).length === 0) {
+    const { displayName } = await client.getProfile(event.source.userId)
+    if (await db.create(event.source.userId, counts, displayName) === 1) {
       return true
-    }  
+    }
     const texts = [
       "はじめまして。遅刻と欠席のカウントをするよ。\n"
         + "メッセージに「遅刻」「欠席」が含まれていると、ええ感じに数字を読み取ってデータベースに追加していくよ。\n"
         + "間違って加算された場合は、負の数を言うことで修正できるよ。",
-      `${displayName}さん\n遅刻: ${late} 欠席: ${absent}`,
+      `${displayName}さん\n遅刻: ${counts.late} 欠席: ${counts.absent}`,
       '名前を変えるには「名前変更 イオ」みたいに言ってね。'
     ]
     client.replyMessage(event.replyToken, texts.map(text => (
@@ -43,7 +37,7 @@ async function count(event, client) {
     late: counts.late + item.data.late
   }
 
-  if (await db.update(userId, newCounts) === 1) {
+  if (await db.update(event.source.userId, newCounts) === 1) {
     return true
   }
   client.replyMessage(event.replyToken, [{
@@ -60,7 +54,7 @@ async function ranking(event, client) {
       userId: item._id.S,
       data: {
         absent: Number(item.data.M.absent.N),
-        late: Number(item.data.M.late.late.N),
+        late: Number(item.data.M.late.N),
         displayName: item.data.M.displayName.S
       }
     }
@@ -70,31 +64,32 @@ async function ranking(event, client) {
   }).map(item => (
     `${item.data.displayName}さん`
       + `遅刻 ${'l'.repeat(item.data.late)}\n`
-      + `欠席 ${'l'.repeat(item.data.absent)}\n`
+      + `欠席 ${'l'.repeat(item.data.absent)}`
   ))
+  console.log(textArr)
   client.replyMessage(event.replyToken, {
     type: 'text',
     text: textArr.join('\n')
   })
+  return false
 }
 
 async function setName(event, client) {
   const newName = message.detectName(event.message.text)
-  if (name === null) {
+  if (newName === null) {
     return false
   }
   if (await db.setName(event.source.userId, newName) === 1) {
     return true
   }
   client.replyMessage(event.replyToken, [{
-    type: 'text', text: `名前を${name}に変更したよ。`
+    type: 'text', text: `名前を${newName}に変更したよ。`
   }])
   return false
 }
 
 module.exports = {
-  def: def,
-  cout: count,
+  coutFromMessage: countFromMessage,
   setName: setName,
   ranking: ranking
 }

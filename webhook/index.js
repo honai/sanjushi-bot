@@ -28,18 +28,18 @@ async function handleEvent(event) {
   const messageText = event.message.text
   const ACTION = message.trigger(messageText)
   switch(ACTION) {
-    case action.def.RANKING:
-      if (await action.ranking(event, client)) {
+    case message.actionDef.RANKING:
+      if (await action.ranking(event, client) === false) {
         return Promise.resolve(null)
       }
       break
-    case action.def.SETNAME:
-      if (await action.setName(event, client)) {
+    case message.actionDef.SETNAME:
+      if (await action.setName(event, client) === false) {
         return Promise.resolve(null)
       }
       break
-    case action.def.COUNT:
-      if (await action.count(event, client)) {
+    case message.actionDef.COUNT:
+      if (await action.coutFromMessage(event, client) === false) {
         return Promise.resolve(null)
       }
       break

@@ -1,4 +1,8 @@
-const action = require('./action').def
+const actionDef = {
+  COUNT: 'COUNT',
+  RANKING: 'RANKING',
+  SETNAME: 'SETNAME'
+}
 
 function trigger(message) {
   const trimmed = message.trim()
@@ -6,15 +10,15 @@ function trigger(message) {
     return null
   }
   if (trimmed === 'ランキング') {
-    return action.RANKING
+    return actionDef.RANKING
   }
   if (trimmed.startsWith('名前変更')) {
-    return action.SETNAME
+    return actionDef.SETNAME
   }
   const words = ['遅刻', '欠席']
   for (const word of words) {
     if (trimmed.includes(word)) {
-      return action.COUNT
+      return actionDef.COUNT
     }
   }
   return null
@@ -103,6 +107,7 @@ function detectDisplayName(text) {
 }
 
 module.exports = {
+  actionDef: actionDef,
   trigger: trigger,
   count: countAbsentLate,
   detectName: detectDisplayName
