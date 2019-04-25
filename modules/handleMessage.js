@@ -1,29 +1,3 @@
-const actionDef = {
-  COUNT: 'COUNT',
-  RANKING: 'RANKING',
-  SETNAME: 'SETNAME'
-}
-
-function trigger(message) {
-  const trimmed = message.trim()
-  if (trimmed.length > 500) {
-    return null
-  }
-  if (trimmed === 'ランキング') {
-    return actionDef.RANKING
-  }
-  if (trimmed.startsWith('名前変更')) {
-    return actionDef.SETNAME
-  }
-  const words = ['遅刻', '欠席']
-  for (const word of words) {
-    if (trimmed.includes(word)) {
-      return actionDef.COUNT
-    }
-  }
-  return null
-}
-
 function countAbsentLate(text) {
   let result = {
     absent: 0,
@@ -97,7 +71,7 @@ function analyzeFirstInt(text) {
 }
 
 function detectDisplayName(text) {
-  if (text.startsWith('名前変更')) {
+  if (text.indexOf('名前変更') === 0) {
     const name = text.slice(4).trim().replace(/[\s]+/, ' ')
     if (name.length > 0 && name.length < 30) {
       return name
@@ -105,10 +79,7 @@ function detectDisplayName(text) {
   }
   return null
 }
-
 module.exports = {
-  actionDef: actionDef,
-  trigger: trigger,
   count: countAbsentLate,
   detectName: detectDisplayName
 }
