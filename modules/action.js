@@ -47,6 +47,21 @@ async function countFromMessage(event, client) {
   return false
 }
 
+function makeGraphText(label, count) {
+  if (count / 25 < 1) {
+    return `${label} ${'|'.repeat(count)} ${String(count)}`
+  }
+  let graphText = `${label} ${'|'.repeat(25)} ${String(count)}`
+  for (let i = 1; i < count / 25; i++) {
+    graphText += `\n${'　'.repeat(label.length)} ${'|'.repeat(25)}`
+  }
+  if (count % 25 === 0) {
+    return graphText
+  }
+  graphText += `\n${'　'.repeat(label.length)} ${'|'.repeat(count % 25)}`
+  return graphText
+}
+
 async function ranking(event, client) {
   const scanRes = await db.scan()
   const data = scanRes.Items.map(item => (
@@ -59,17 +74,32 @@ async function ranking(event, client) {
       }
     }
   ))
-  const textArr = data.sort((a, b) => {
-    return (b.data.absent + b.data.late) - (a.data.absent + a.data.late)
-  }).map(item => (
-    `${item.data.displayName}さん`
-      + `遅刻 ${'l'.repeat(item.data.late)}\n`
-      + `欠席 ${'l'.repeat(item.data.absent)}`
+  function customSort(a, b) {
+    return (b.absent * 2 + b.late) - (a.absent * 2 + a.late)
+  }
+  const sorted = data.sort((a, b) => (
+    customSort(a.data, b.data)
   ))
-  console.log(textArr)
+  const textArr = sorted.map((item, index) => {
+    // rank starts with 0
+    // undefinedへのアクセスを避けるため
+    let rank = index + 1
+    while (customSort(item.data, sorted[rank - 1].data) === 0) {
+      rank -= 1
+      if (rank === 0) {
+        break
+      }
+    }
+    return (
+      `${String(rank+1)}位 ${item.data.displayName}さん ${String(item.data.absent*2+item.data.late)}pt\n`
+      + makeGraphText('遅刻', item.data.late) + '\n'
+      + makeGraphText('欠席', item.data.absent)
+    )
+  })
+
   client.replyMessage(event.replyToken, {
     type: 'text',
-    text: textArr.join('\n')
+    text: textArr.join('\n\n')
   })
   return false
 }
