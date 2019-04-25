@@ -112,7 +112,7 @@ async function setName(userId, name) {
   }
 }
 
-function scan() {
+async function scan() {
   const params = {
     TableName: tableName
   }
