@@ -1,10 +1,11 @@
 {
   "version": 2,
   "env": {
-    "LINE_CHANNEL_SECRET": "@line-channel-secret",
-    "LINE_CHANNEL_ACCESS_TOKEN": "@line-channel-access-token",
+    "LINE_CHANNEL_SECRET": "@line-channel-secret-dev",
+    "LINE_CHANNEL_ACCESS_TOKEN": "@line-channel-access-token-dev",
     "DYNAMO_ACCESS_KEY_ID": "@dynamo-access-key-id",
-    "DYNAMO_SECRET_ACCESS_KEY": "@dynamo-secret-access-key"
+    "DYNAMO_SECRET_ACCESS_KEY": "@dynamo-secret-access-key",
+    "DYNAMO_TABLENAME": "line_bot_dev"
   },
   "builds": [
     { "src": "webhook/index.js", "use": "@now/node" }
