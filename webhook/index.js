@@ -46,7 +46,7 @@ async function handleEvent(event) {
     default:
       return Promise.resolve(null)
   }
-  return client.replyMessage(event.replyToken, {type: 'text', text: 'エラー'})
+  return client.replyMessage(event.replyToken, {type: 'text', text: 'エラーです'})
 }
 
 module.exports = app
