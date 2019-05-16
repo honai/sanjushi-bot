@@ -9,7 +9,7 @@ function trigger(message) {
   if (trimmed.length > 500) {
     return null
   }
-  if (trimmed === 'ランキング') {
+  if (trimmed === 'ランキング' || trimmed === 'ランク') {
     return actionDef.RANKING
   }
   if (trimmed.startsWith('名前変更')) {
