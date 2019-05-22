@@ -51,6 +51,9 @@ async function countFromMessage(event, client) {
 }
 
 function makeGraphText(label, count) {
+  if (count < 0) {
+    return 'マイナス #とは'
+  }
   const repeatNum = Math.floor(count / 25)
   if (repeatNum === 0) {
     return `${label} ${'|'.repeat(count)} ${String(count)}`
