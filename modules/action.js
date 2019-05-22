@@ -82,7 +82,11 @@ async function ranking() {
     }
   ))
   function customSort(a, b) {
-    return (b.absent * 2 + b.late) - (a.absent * 2 + a.late)
+    const pointDiff = (b.absent * 2 + b.late) - (a.absent * 2 + a.late)
+    if (pointDiff !== 0) {
+      return pointDiff
+    }
+    return b.absent - a.absent
   }
   const sorted = data.sort((a, b) => (
     customSort(a.data, b.data)
