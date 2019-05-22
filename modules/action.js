@@ -51,11 +51,12 @@ async function countFromMessage(event, client) {
 }
 
 function makeGraphText(label, count) {
-  if (count / 25 < 1) {
+  const repeatNum = Math.floor(count / 25)
+  if (repeatNum === 1) {
     return `${label} ${'|'.repeat(count)} ${String(count)}`
   }
   let graphText = `${label} ${'|'.repeat(25)} ${String(count)}`
-  for (let i = 1; i < count / 25; i++) {
+  for (let i = 1; i < repeatNum; i++) {
     graphText += `\n${'　'.repeat(label.length)} ${'|'.repeat(25)}`
   }
   if (count % 25 === 0) {
