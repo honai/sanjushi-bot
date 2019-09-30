@@ -24,7 +24,7 @@ async function countFromMessage(event, client) {
       `${displayName}さん\n遅刻: ${counts.late} 欠席: ${counts.absent}`,
       '名前を変えるには「名前変更 イオ」みたいに言ってね。'
     ]
-    return texts.map(text => (
+    return replys.map(text => (
       { type: 'text', text: text }
     ))
   }
