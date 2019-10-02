@@ -1,4 +1,3 @@
-const express = require('express')
 const line = require('@line/bot-sdk')
 
 const action = require('../modules/action')
@@ -10,14 +9,6 @@ const config = {
   channelSecret: process.env.LINE_CHANNEL_SECRET,
   channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN
 }
-
-const app = express()
-
-app.post('*', line.middleware(config), (req, res) => {
-  Promise
-    .all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result))
-});
 
 const client = new line.Client(config)
 
@@ -52,4 +43,8 @@ async function handleEvent(event) {
   return Promise.resolve(null)
 }
 
-module.exports = app
+module.exports = (req, res) => {
+  Promise
+    .all(req.body.events.map(handleEvent))
+    .then((result) => res.json(result))
+}
