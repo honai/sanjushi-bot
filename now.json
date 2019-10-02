@@ -5,7 +5,12 @@
     "LINE_CHANNEL_ACCESS_TOKEN": "@line-channel-access-token",
     "DYNAMO_ACCESS_KEY_ID": "@dynamo-access-key-id",
     "DYNAMO_SECRET_ACCESS_KEY": "@dynamo-secret-access-key",
-    "DYNAMO_TABLENAME": "line_bot_2"
+    "DYNAMO_TABLENAME": "line_bot_2",
+    "TW_COSUMER_KEY": "@tw-consumer-key",
+    "TW_COSUMER_SECRET": "@tw-consumer-secret",
+    "TW_USER_TOKEN": "@tw-chansan-token",
+    "TW_USER_SECRET": "@tw-chansan-secret",
+    "POST_KEY": "@post-key"
   },
   "routes": [
     { "src": "/", "dest": "404.html", "status": 404 }
