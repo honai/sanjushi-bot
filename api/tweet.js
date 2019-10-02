@@ -12,6 +12,7 @@ const client = new Twitter(authParams)
 module.exports = async (req, res) => {
   if (req.query.k !== process.env.POST_KEY) {
     res.status(403)
+    res.send('forbidden')
     return
   }
   const params = {
@@ -23,5 +24,6 @@ module.exports = async (req, res) => {
     })
     .catch(error => {
       res.status(500)
+      res.send('Twitter API Error')
     })
 }
