@@ -1,3 +1,4 @@
+const action = require('../modules/action')
 const Twitter = require('twitter')
 
 const authParams = {
@@ -15,8 +16,11 @@ module.exports = async (req, res) => {
     res.send('forbidden')
     return
   }
+
+  const ranking = await action.ranking()
+
   const params = {
-    status: 'hello world'
+    status: ranking[0].text
   }
   client.post('statuses/update', params)
     .then(tweet => {
