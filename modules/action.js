@@ -127,8 +127,22 @@ async function setName(event) {
   }]
 }
 
+async function setClassNum(event) {
+  const newNumber = message.detectClassNum(event.message.text)
+  if (newNumber === null) {
+    return null
+  }
+  if (await db.setClassNum(event.source.userId, newNumber) === 1) {
+    return errorRep
+  }
+  return [{
+    type: 'text', text: `科目数を${newNumber.toString()}に変更したよ。`
+  }]
+}
+
 module.exports = {
   coutFromMessage: countFromMessage,
   setName: setName,
+  setClassNum: setClassNum,
   ranking: ranking
 }

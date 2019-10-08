@@ -112,6 +112,33 @@ async function setName(userId, name) {
   }
 }
 
+async function setClassNum(userId, num) {
+  const params = {
+    TableName: tableName,
+    Key: {
+      '_id': {
+        S: userId
+      }
+    },
+    ExpressionAttributeNames: {
+      '#D': 'data',
+      '#N': 'classNumber'
+    },
+    ExpressionAttributeValues: {
+      ':number': {S: String(num)}
+    },
+    UpdateExpression: 'SET #D.#N = :name',
+    ReturnValues: 'UPDATED_NEW'
+  }
+  try {
+    const res = await dynamo.updateItem(params).promise()
+    return res
+  } catch(err) {
+    console.error(err)
+    return 1
+  }
+}
+
 async function scan() {
   const params = {
     TableName: tableName
@@ -130,5 +157,6 @@ module.exports = {
   create: createData,
   update: updateData,
   setName: setName,
+  setClassNum: setClassNum,
   scan: scan
 }

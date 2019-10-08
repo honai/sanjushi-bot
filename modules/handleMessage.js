@@ -1,7 +1,8 @@
 const actionDef = {
   COUNT: 'COUNT',
   RANKING: 'RANKING',
-  SETNAME: 'SETNAME'
+  SETNAME: 'SETNAME',
+  SETCLASSNUM: 'SETCLASSNUM'
 }
 
 function trigger(message) {
@@ -14,6 +15,9 @@ function trigger(message) {
   }
   if (trimmed.startsWith('名前変更')) {
     return actionDef.SETNAME
+  }
+  if (trimmed.startsWith('科目数')) {
+    return actionDef.SETCLASSNUM
   }
   const words = ['遅刻', '欠席']
   for (const word of words) {
@@ -106,9 +110,20 @@ function detectDisplayName(text) {
   return null
 }
 
+function detectClassNum(text) {
+  if (text.startsWith('科目数')) {
+    const num = Number(text.slice(3).trim())
+    if (Number.isInteger(num) && num > 0 && num <= 25) {
+      return num
+    }
+  }
+  return null
+}
+
 module.exports = {
   actionDef: actionDef,
   trigger: trigger,
   count: countAbsentLate,
-  detectName: detectDisplayName
+  detectName: detectDisplayName,
+  detectClassNum: detectClassNum
 }
