@@ -26,14 +26,14 @@ async function handleEvent(event) {
       }
       break
     case message.actionDef.SETNAME:
-      const reply = await action.setName(event)
-      if (reply) {
+      const reply2 = await action.setName(event)
+      if (reply2) {
         return client.replyMessage(event.replyToken, reply2)
       }
       break
     case message.actionDef.COUNT:
-      const reply = await action.coutFromMessage(event, client)
-      if (reply) {
+      const reply3 = await action.coutFromMessage(event, client)
+      if (reply3) {
         return client.replyMessage(event.replyToken, reply3)
       }
       break
