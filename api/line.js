@@ -32,14 +32,14 @@ async function handleEvent(event) {
       }
       break
     case message.actionDef.SETCLASSNUM:
-      const reply = await action.setClassNum(event)
-      if (reply) {
+      const reply3 = await action.setClassNum(event)
+      if (reply3) {
         return client.replyMessage(event.replyToken, reply)
       }
       break
     case message.actionDef.COUNT:
-      const reply3 = await action.coutFromMessage(event, client)
-      if (reply3) {
+      const reply4 = await action.coutFromMessage(event, client)
+      if (reply4) {
         return client.replyMessage(event.replyToken, reply3)
       }
       break
