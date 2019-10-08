@@ -83,7 +83,7 @@ async function ranking() {
         absent: Number(item.data.M.absent.N),
         late: Number(item.data.M.late.N),
         displayName: item.data.M.displayName.S,
-        classNum: Number(item.data.M.classNumber.N)
+        classNum: item.data.M.classNumber ? Number(item.data.M.classNumber.N) : 1
       }
     }
   ))
