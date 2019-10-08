@@ -94,7 +94,7 @@ async function ranking() {
     }
     return b.absent - a.absent
   }
-  const sorted = data.sort(customSort)
+  const sorted = data.sort((a, b) => customSort(a.data, b.data))
   const textArr = sorted.map((item, index) => {
     // rank starts with 0
     // undefinedへのアクセスを避けるため
