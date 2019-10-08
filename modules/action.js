@@ -71,7 +71,7 @@ function makeGraphText(label, count) {
 }
 
 function calcPoint(absent, late, classNum) {
-  return (absent * 2 + late) * 25 / classNum
+  return Math.round((absent * 2 + late) * 25 / classNum)
 }
 
 async function ranking() {
