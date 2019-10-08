@@ -33,7 +33,8 @@ async function countFromMessage(event, client) {
   item.data = {
     absent: Number(getRes.Item.data.M.absent.N),
     late: Number(getRes.Item.data.M.late.N),
-    displayName: getRes.Item.data.M.displayName.S
+    displayName: getRes.Item.data.M.displayName.S,
+    classNum: Number(getRes.Item.data.M.classNumber.N) || 1
   }
 
   const newCounts = {
@@ -69,6 +70,10 @@ function makeGraphText(label, count) {
   return graphText
 }
 
+function calcPoint(absent, late, classNum) {
+  return (absent * 2 + late) * 25 / classNum
+}
+
 async function ranking() {
   const scanRes = await db.scan()
   const data = scanRes.Items.map(item => (
@@ -77,20 +82,19 @@ async function ranking() {
       data: {
         absent: Number(item.data.M.absent.N),
         late: Number(item.data.M.late.N),
-        displayName: item.data.M.displayName.S
+        displayName: item.data.M.displayName.S,
+        classNum: Number(item.data.M.classNumber.N)
       }
     }
   ))
   function customSort(a, b) {
-    const pointDiff = (b.absent * 2 + b.late) - (a.absent * 2 + a.late)
+    const pointDiff = calcPoint(b.absent, b.late, b.classNum) - calcPoint(a.absent, a.late, a.classNum)
     if (pointDiff !== 0) {
       return pointDiff
     }
     return b.absent - a.absent
   }
-  const sorted = data.sort((a, b) => (
-    customSort(a.data, b.data)
-  ))
+  const sorted = data.sort(customSort)
   const textArr = sorted.map((item, index) => {
     // rank starts with 0
     // undefinedへのアクセスを避けるため
@@ -101,8 +105,9 @@ async function ranking() {
         break
       }
     }
+    const point = calcPoint(item.data.absent, item.data.late, item.data.classNum)
     return (
-      `${String(rank+1)}位 ${item.data.displayName}さん ${String(item.data.absent*2+item.data.late)}pt\n`
+      `${rank + 1}位 ${item.data.displayName}さん ${point}pt ${item.data.classNum}科目\n`
       + makeGraphText('遅刻', item.data.late) + '\n'
       + makeGraphText('欠席', item.data.absent)
     )
