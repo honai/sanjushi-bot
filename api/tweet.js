@@ -19,8 +19,11 @@ module.exports = async (req, res) => {
 
   const ranking = await action.ranking()
 
+  const rankText = ranking[0].text
+  const date = new Date()
+  const dateText = `${(date.getMonth() + 1).toString()}/${date.getDate().toString}`
   const params = {
-    status: ranking[0].text
+    status: `${dateText}\n\n${rankText}`
   }
   client.post('statuses/update', params)
     .then(tweet => {
