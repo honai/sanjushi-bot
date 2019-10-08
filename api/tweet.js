@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
 
   const rankText = ranking[0].text
   const date = new Date()
-  const dateText = `${(date.getMonth() + 1).toString()}/${date.getDate().toString}`
+  const dateText = `${(date.getMonth() + 1).toString()}/${date.getDate().toString()}`
   const params = {
     status: `${dateText}\n\n${rankText}`
   }
