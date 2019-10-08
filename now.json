@@ -12,9 +12,6 @@
     "TW_USER_SECRET": "@tw-chansan-secret",
     "POST_KEY": "@post-key"
   },
-  "routes": [
-    { "src": "/", "dest": "404.html", "status": 404 }
-  ],
   "regions": ["hnd1"],
   "alias": ["sanjushi-bot.honai.now.sh"]
 }
