@@ -125,9 +125,9 @@ async function setClassNum(userId, num) {
       '#N': 'classNumber'
     },
     ExpressionAttributeValues: {
-      ':number': {S: String(num)}
+      ':number': {N: String(num)}
     },
-    UpdateExpression: 'SET #D.#N = :name',
+    UpdateExpression: 'SET #D.#N = :number',
     ReturnValues: 'UPDATED_NEW'
   }
   try {
